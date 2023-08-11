@@ -1,1 +1,231 @@
-zxcvzxcv
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMDB Movie Details</title>
+    <style>
+        /* Common styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: left;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #555;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        
+        .copy-button {
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .copy-button:hover {
+            background-color: #45a049;
+        }
+        
+        #movieDetails {
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        #castImages {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        #castImages div {
+            text-align: center;
+            margin: 10px;
+            width: 150px;
+        }
+        
+        #castImages img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        #castImages p {
+            font-size: 10px;
+            color: #777;
+            margin-top: 5px;
+        }
+        
+        #posterImage {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        #posterImage img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        #posterOptions {
+            margin-top: 10px;
+        }
+        
+        #posterOptions label {
+            margin-right: 10px;
+        }
+        
+        .rating-text {
+            margin-left: 10px;
+            font-weight: bold;
+            color: #f1c40f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TMDB Movie Details</h1>
+        
+        <label for="movieId">Enter TMDB Movie ID:</label>
+        <input type="text" id="movieId" placeholder="e.g., 123456">
+        
+        <div id="posterOptions">
+            <label>
+                <input type="radio" name="posterSize" value="w92" checked>
+                Small
+            </label>
+            <label>
+                <input type="radio" name="posterSize" value="w342">
+                Medium
+            </label>
+            <label>
+                <input type="radio" name="posterSize" value="w500">
+                Large
+            </label>
+        </div>
+        
+        <button onclick="fetchMovieDetails()">Get Details</button>
+        
+        <div id="posterImage">
+            <!-- Movie poster will be displayed here -->
+        </div>
+        
+        <div id="movieDetails">
+            <!-- Movie details will be displayed here -->
+        </div>
+    </div>
+    
+    <script>
+        async function fetchMovieDetails() {
+            const movieId = document.getElementById('movieId').value;
+            const movieDetailsContainer = document.getElementById('movieDetails');
+            const posterImageContainer = document.getElementById('posterImage');
+            const posterSize = document.querySelector('input[name="posterSize"]:checked').value;
+            
+            if (movieId.trim() === '') {
+                movieDetailsContainer.innerHTML = '<p>Please enter a valid TMDB movie ID.</p>';
+                posterImageContainer.innerHTML = '';
+                return;
+            }
+            
+            const apiKey = '2d4cfdfc9025f8329e4d6eb27ba138cc'; // Replace with your TMDB API key
+            
+            try {
+                const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=en-US&append_to_response=credits`);
+                const data = await response.json();
+                
+                const title = data.title;
+                const releaseYear = new Date(data.release_date).getFullYear();
+                const releaseDate = new Date(data.release_date).toDateString();
+                const genres = data.genres.map(genre => genre.name).join(', ');
+                const overview = data.overview;
+                const director = data.credits.crew.find(person => person.job === 'Director')?.name || 'Not available';
+                const castWithRoles = data.credits.cast.slice(0, 5).map(person => `
+                    <div>
+                        <img src="https://image.tmdb.org/t/p/w92${person.profile_path}" alt="${person.name}">
+                        <p><strong>${person.name}</strong><br>${person.character}</p>
+                    </div>
+                `).join('');
+                const rating = data.vote_average;
+                const posterPath = data.poster_path;
+                
+                const movieDetails = `
+                    <h2>${title} (${releaseYear})</h2>
+                    <img src="https://image.tmdb.org/t/p/${posterSize}${posterPath}" alt="${title} Poster" style="border-radius: 10px;">
+                    <p><strong>Release Date:</strong><br>${releaseDate}</p>
+                    <p><strong>Genre:</strong> ${genres}</p>
+                    <p><strong>Director:</strong> ${director}</p>
+                    <p><strong>Cast:</strong></p>
+                    <div id="castImages">${castWithRoles}</div>
+                    <p><strong>Plot:</strong> ${overview}</p>
+                    <p><strong>Rating:</strong> <span class="rating-text">${rating} / 10</span></p>
+                `;
+                
+                movieDetailsContainer.innerHTML = movieDetails;
+            } catch (error) {
+                console.error('Error fetching movie details:', error);
+                movieDetailsContainer.innerHTML = `<p>Error fetching movie details: ${error}</p>`;
+                posterImageContainer.innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html>
