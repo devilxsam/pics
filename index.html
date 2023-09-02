@@ -1,249 +1,235 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TMDb Movie ID Selector</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+  <title>TMDb Movie Search 2023</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1c1c1c;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-        .container {
-            background-color: #212121;
-            color: #ffffff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 80%;
-            margin: 10px;
-        }
+    .container {
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 90%;
+      margin: 10px;
+    }
 
-        input[type="text"] {
-            width: 80%;
-            max-width: 300px;
-            padding: 12px;
-            margin: 0 auto;
-            margin-bottom: 10px;
-            border: 2px solid #00cc99;
-            border-radius: 5px;
-            background-color: #333;
-            color: #ffffff;
-            font-size: 18px;
-            box-shadow: 0px 0px 10px #00cc99;
-        }
+    input[type="text"] {
+      width: 80%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 2px solid #00cc99;
+      border-radius: 8px;
+      background-color: #2c2c2c;
+      color: #00ff4c;
+      font-size: 18px;
+      box-shadow: 0px 0px 10px #00cc99;
+    }
 
-        .results {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #444;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #333;
-            display: none;
-        }
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: #ff6a00;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 10px;
+    }
 
-        .result-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    button:hover {
+      background-color: #00cc99;
+    }
 
-        .result-item:hover {
-            background-color: #444;
-        }
+    .results {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 10px;
+      background-color: #333;
+      display: none;
+    }
 
-        .movie-poster {
-            width: 70px;
-            height: 100px;
-            margin-right: 10px;
-        }
+    .result-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-        .clickable {
-            cursor: pointer;
-            text-decoration: underline;
-            color: #00cc99;
-        }
+    .result-item:hover {
+      background-color: #444;
+    }
 
-        h2 {
-            font-size: 32px;
-            color: #00cc99;
-        }
+    .movie-poster {
+      width: 70px;
+      height: 100px;
+      margin-right: 10px;
+    }
 
-        /* Media Queries for Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
+    .clickable {
+      cursor: pointer;
+      text-decoration: underline;
+      color: #00cc99;
+    }
 
-            input[type="text"] {
-                padding: 10px;
-                font-size: 16px;
-                max-width: 100%;
-            }
+    h2 {
+      font-size: 32px;
+      color: #00cc99;
+    }
 
-            .results {
-                max-height: 300px;
-            }
+    /* Media Queries for Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
 
-            .result-item {
-                padding: 6px;
-            }
+      input[type="text"] {
+        font-size: 16px;
+      }
 
-            .movie-poster {
-                width: 50px;
-                height: 70px;
-                margin-right: 6px;
-            }
+      .results {
+        max-height: 300px;
+      }
 
-            h2 {
-                font-size: 24px;
-            }
-        }
+      .result-item {
+        padding: 6px;
+      }
 
-        /* Canvas and Text Box Styles */
-        .canvas-container {
-            position: relative;
-            max-width: 80%;
-            margin: 10px;
-            overflow: hidden;
-        }
+      .movie-poster {
+        width: 50px;
+        height: 70px;
+        margin-right: 6px;
+      }
 
-        .canvas {
-            width: 100%;
-            background-color: #212121;
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .text-box {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            padding: 10px;
-            border: 2px solid #00cc99;
-            border-radius: 5px;
-            background-color: #333;
-            color: #ffffff;
-            font-size: 18px;
-            box-shadow: 0px 0px 10px #00cc99;
-        }
-    </style>
+      h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>TMDb Movie ID Selector</h2>
-        <input type="text" id="movieName" placeholder="Enter Movie Name" oninput="searchMovies()">
-        <div class="results" id="results"></div>
-        <div id="selectedResult"></div>
-    </div>
+  <div class="container">
+    <h2>TMDb Movie Search 2023</h2>
+    <input type="text" id="movieName" placeholder="Enter Movie Name" oninput="searchMovies()">
+    <div class="results" id="results"></div>
+  </div>
 
-    <!-- Canvas and Text Box -->
-    <div class="canvas-container">
-        <div class="canvas">
-            <input type="text" class="text-box" id="canvasTextBox" placeholder="Text Box on Canvas">
-        </div>
-    </div>
+  <script>
+    let typingTimer;
+    const doneTypingInterval = 500; // Adjust this interval as needed (milliseconds)
 
-    <script>
-        function getMoviesByName(movieName) {
-            const API_KEY = '2d4cfdfc9025f8329e4d6eb27ba138cc';
-            const baseUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(movieName)}`;
+    function getMoviesByName(movieName) {
+      const API_KEY = '2d4cfdfc9025f8329e4d6eb27ba138cc'; // TMDb API key
+      const baseUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(movieName)}`;
 
-            return fetch(baseUrl)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.results) {
-                        return data.results;
-                    } else {
-                        return [];
-                    }
-                });
-        }
+      return fetch(baseUrl)
+        .then(response => response.json())
+        .then(data => {
+          if (data.results) {
+            return data.results;
+          } else {
+            return [];
+          }
+        });
+    }
 
-        function displaySearchResults(results) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
+    function displaySearchResults(results) {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '';
 
-            results.forEach(movie => {
-                const resultItem = document.createElement('div');
-                resultItem.className = 'result-item';
-                resultItem.onclick = () => selectMovieTitle(movie);
+      results.forEach(movie => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        resultItem.onclick = () => selectMovieTitle(movie);
 
-                const poster = document.createElement('img');
-                poster.className = 'movie-poster';
-                poster.src = `https://image.tmdb.org/t/p/w92${movie.poster_path}`;
-                resultItem.appendChild(poster);
+        const poster = document.createElement('img');
+        poster.className = 'movie-poster';
+        poster.src = `https://image.tmdb.org/t/p/w92${movie.poster_path}`;
+        resultItem.appendChild(poster);
 
-                const title = document.createElement('div');
-                title.textContent = movie.title;
-                resultItem.appendChild(title);
+        const title = document.createElement('div');
+        title.textContent = movie.title;
+        resultItem.appendChild(title);
 
-                resultsDiv.appendChild(resultItem);
+        resultsDiv.appendChild(resultItem);
+      });
+
+      // Show the results div
+      resultsDiv.style.display = 'block';
+    }
+
+    function selectMovieTitle(movie) {
+      const selectedResultDiv = document.getElementById('results');
+      selectedResultDiv.innerHTML = `Selected movie: <strong>${movie.title}</strong> (ID: <span class="clickable" onclick="copyToClipboard('${movie.id}')">${movie.id}</span>)`;
+
+      // Clear the input field when movie ID is copied
+      document.getElementById('movieName').value = '';
+    }
+
+    function copyToClipboard(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+
+      const copiedElement = document.createElement('span');
+      copiedElement.textContent = 'Copied!';
+      copiedElement.style.color = '#00cc99';
+      const clickableElement = document.querySelector('.clickable');
+      clickableElement.appendChild(copiedElement);
+
+      setTimeout(() => {
+        clickableElement.removeChild(copiedElement);
+
+        // Clear the input field and selected movie text
+        document.getElementById('movieName').value = '';
+        document.getElementById('results').innerHTML = '';
+        document.getElementById('results').style.display = 'none'; // Hide the results div
+
+      }, 1500);
+    }
+
+    function searchMovies() {
+      clearTimeout(typingTimer);
+      const movieName = document.getElementById('movieName').value;
+      const resultsDiv = document.getElementById('results');
+
+      if (movieName) {
+        typingTimer = setTimeout(() => {
+          getMoviesByName(movieName)
+            .then(results => {
+              displaySearchResults(results);
+            })
+            .catch(error => {
+              console.error(error);
+              resultsDiv.style.display = 'none'; // Hide the results div on error
             });
-
-            resultsDiv.style.display = 'block';
-        }
-
-        function selectMovieTitle(movie) {
-            const selectedResultDiv = document.getElementById('selectedResult');
-            selectedResultDiv.innerHTML = `Selected movie: <strong>${movie.title}</strong> (ID: <span class="clickable" onclick="copyToClipboard('${movie.id}')">${movie.id}</span>)`;
-
-            document.getElementById('movieName').value = '';
-            document.getElementById('results').style.display = 'none';
-        }
-
-        function copyToClipboard(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-
-            const copiedElement = document.createElement('span');
-            copiedElement.textContent = 'Copied!';
-            copiedElement.style.color = '#00cc99';
-            const clickableElement = document.querySelector('.clickable');
-            clickableElement.appendChild(copiedElement);
-
-            setTimeout(() => {
-                clickableElement.removeChild(copiedElement);
-
-                document.getElementById('movieName').value = '';
-                document.getElementById('selectedResult').innerHTML = '';
-            }, 1500);
-        }
-
-        function searchMovies() {
-            const movieName = document.getElementById('movieName').value;
-            const resultsDiv = document.getElementById('results');
-
-            if (movieName) {
-                getMoviesByName(movieName)
-                    .then(results => {
-                        displaySearchResults(results);
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        resultsDiv.style.display = 'none';
-                    });
-            } else {
-                resultsDiv.style.display = 'none';
-            }
-        }
-    </script>
+        }, doneTypingInterval);
+      } else {
+        resultsDiv.style.display = 'none'; // Hide the results div when input is empty
+      }
+    }
+  </script>
 </body>
 </html>
