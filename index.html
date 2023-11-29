@@ -126,48 +126,52 @@
     }
   </style>
 </head>
+<!-- ... (existing HTML code) ... -->
+
 <body>
   <div class="container">
-    <h2>TMDb Movie Search 2023</h2>
-    <input type="text" id="movieName" placeholder="Enter Movie Name" oninput="searchMovies()">
+    <h2>TMDb Search 2023</h2>
+    <label for="searchType">Search Type:</label>
+    <select id="searchType" onchange="changeSearchType()">
+      <option value="movie">Movies</option>
+      <option value="tv">TV Shows</option>
+    </select>
+    <input type="text" id="searchTerm" placeholder="Enter Title" oninput="searchContent()">
     <div class="results" id="results"></div>
   </div>
 
   <script>
     let typingTimer;
     const doneTypingInterval = 500; // Adjust this interval as needed (milliseconds)
+    let currentSearchType = 'movie'; // Default search type
 
-    function getMoviesByName(movieName) {
+    function getMediaById(mediaType, id) {
       const API_KEY = '2d4cfdfc9025f8329e4d6eb27ba138cc'; // TMDb API key
-      const baseUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(movieName)}`;
+      const baseUrl = `https://api.themoviedb.org/3/${mediaType}/${id}?api_key=${API_KEY}`;
 
       return fetch(baseUrl)
         .then(response => response.json())
         .then(data => {
-          if (data.results) {
-            return data.results;
-          } else {
-            return [];
-          }
+          return data;
         });
     }
 
-    function displaySearchResults(results) {
+    function displayResults(results) {
       const resultsDiv = document.getElementById('results');
       resultsDiv.innerHTML = '';
 
-      results.forEach(movie => {
+      results.forEach(content => {
         const resultItem = document.createElement('div');
         resultItem.className = 'result-item';
-        resultItem.onclick = () => selectMovieTitle(movie);
+        resultItem.onclick = () => selectContent(content);
 
         const poster = document.createElement('img');
-        poster.className = 'movie-poster';
-        poster.src = `https://image.tmdb.org/t/p/w92${movie.poster_path}`;
+        poster.className = 'media-poster';
+        poster.src = `https://image.tmdb.org/t/p/w92${content.poster_path || content.backdrop_path}`;
         resultItem.appendChild(poster);
 
         const title = document.createElement('div');
-        title.textContent = movie.title;
+        title.textContent = content.title || content.name;
         resultItem.appendChild(title);
 
         resultsDiv.appendChild(resultItem);
@@ -177,12 +181,12 @@
       resultsDiv.style.display = 'block';
     }
 
-    function selectMovieTitle(movie) {
+    function selectContent(content) {
       const selectedResultDiv = document.getElementById('results');
-      selectedResultDiv.innerHTML = `Selected movie: <strong>${movie.title}</strong> (ID: <span class="clickable" onclick="copyToClipboard('${movie.id}')">${movie.id}</span>)`;
+      selectedResultDiv.innerHTML = `Selected content: <strong>${content.title || content.name}</strong> (ID: <span class="clickable" onclick="copyToClipboard('${content.id}')">${content.id}</span>)`;
 
-      // Clear the input field when movie ID is copied
-      document.getElementById('movieName').value = '';
+      // Clear the input field when content ID is copied
+      document.getElementById('searchTerm').value = '';
     }
 
     function copyToClipboard(text) {
@@ -202,8 +206,8 @@
       setTimeout(() => {
         clickableElement.removeChild(copiedElement);
 
-        // Clear the input field and selected movie text
-        document.getElementById('movieName').value = '';
+        // Clear the input field and selected content text
+        document.getElementById('searchTerm').value = '';
         document.getElementById('results').innerHTML = '';
         document.getElementById('results').style.display = 'none'; // Hide the results div
 
@@ -212,14 +216,14 @@
 
     function searchMovies() {
       clearTimeout(typingTimer);
-      const movieName = document.getElementById('movieName').value;
+      const searchTerm = document.getElementById('searchTerm').value;
       const resultsDiv = document.getElementById('results');
 
-      if (movieName) {
+      if (searchTerm) {
         typingTimer = setTimeout(() => {
-          getMoviesByName(movieName)
+          getMediaByName(currentSearchType, searchTerm)
             .then(results => {
-              displaySearchResults(results);
+              displayResults(results);
             })
             .catch(error => {
               console.error(error);
@@ -229,6 +233,27 @@
       } else {
         resultsDiv.style.display = 'none'; // Hide the results div when input is empty
       }
+    }
+
+    function getMediaByName(type, term) {
+      const API_KEY = '2d4cfdfc9025f8329e4d6eb27ba138cc'; // TMDb API key
+      const baseUrl = `https://api.themoviedb.org/3/search/${type}?api_key=${API_KEY}&query=${encodeURIComponent(term)}`;
+
+      return fetch(baseUrl)
+        .then(response => response.json())
+        .then(data => {
+          if (data.results) {
+            return data.results;
+          } else {
+            return [];
+          }
+        });
+    }
+
+    function changeSearchType() {
+      currentSearchType = document.getElementById('searchType').value;
+      document.getElementById('searchTerm').value = ''; // Clear input when search type changes
+      document.getElementById('results').style.display = 'none'; // Hide results when search type changes
     }
   </script>
 </body>
