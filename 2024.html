@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Year Greeting 2024</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #2c3e50; /* Background color */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden; /* Hide overflow */
+      position: relative;
+    }
+    .greeting-container {
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 1s ease-in-out; /* Fade-in animation */
+  width: 80%; /* Adjust the width */
+  max-width: 600px; /* Set a maximum width */
+  height: 400px; /* Adjust the height */
+  max-height: 80vh; /* Set a maximum height */
+  overflow: auto; /* Add scrollbars if content exceeds the container */
+}
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #2c3e50; /* Header color */
+    }
+    h3 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      color: #2980b9; /* Greeting color */
+    }
+    p {
+      font-size: 1.2em;
+      color: #555; /* Text color */
+    }
+    .balloon {
+      position: absolute;
+      width: 20px;
+      height: 30px;
+      border-radius: 50% 50% 40% 40%;
+      bottom: -30px;
+      animation: floatBalloons 8s linear infinite;
+      transform-origin: 50% 100%;
+      z-index: -1;
+    }
+    @keyframes floatBalloons {
+      0% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-100px) scale(1.1);
+      }
+      100% {
+        transform: translateY(-200px) scale(1);
+      }
+    }
+
+    /* Media Query for smaller screens */
+    @media (max-width: 576px) {
+      .greeting-container {
+        padding: 10px;
+      }
+      h1 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+      }
+      h3 {
+        font-size: 1.2em;
+        margin-bottom: 5px;
+      }
+      p {
+        font-size: 1em;
+      }
+    }
+    p {
+      font-size: 1.2em;
+      color: #000000; /* Text color */
+      font-weight: bold; /* Make the text bold */
+    }
+  </style>
+</head>
+<body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  function createBalloons() {
+    const numBalloons = 20; // Number of balloons
+    const colors = ['#e74c3c', '#3498db', '#2ecc71', '#9b59b6', '#f1c40f']; // Balloon colors
+    const container = document.body;
+
+    for (let i = 0; i < numBalloons; i++) {
+      const balloon = document.createElement('div');
+      balloon.classList.add('balloon');
+      balloon.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      balloon.style.left = `${Math.random() * 100}vw`; // Random horizontal position
+      balloon.style.animationDuration = `${Math.random() * 6 + 4}s`; // Random animation duration
+      container.appendChild(balloon);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const userName = prompt("Enter Your Name:");
+    if (userName !== null && userName !== "") {
+      const greetingContainer = document.createElement("div");
+      greetingContainer.classList.add("greeting-container");
+      greetingContainer.innerHTML = `
+         <h1>This is For You ❤️</h1>
+        <div class="mt-4">
+          <h3>Hye..!!</h3>
+          <p><strong>Dear ${userName}, Happy New Year 2024!</strong></p>
+          <p><strong>Because you are with me in the future of my life and you have taught me how to live, and I have learned a lot from you, and if I make a mistake, a good friend will understand and forgive me. And if I have ever hurt you, please forgive me, then you will not be angry with me even in the new year, there is nothing more to say but if we meet someday, I will tell you how good you are to me.</strong></p>
+          <p><strong>Regards,<br>Your good friend,<br>Sameer</strong></p>
+        </div>
+      `;
+      document.body.appendChild(greetingContainer);
+
+      createBalloons();
+    }
+  });
+</script>
+
+</body>
+</html>
