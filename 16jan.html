@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Just Reminding!</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+
+        header {
+            background-color: #3498db;
+            padding: 20px;
+            color: #fff;
+            font-size: 24px;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        #impressButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        #impressedText {
+            display: none;
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        #playSongButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+            pointer-events: none; /* Initially disable the button */
+            opacity: 0.5; /* Optionally reduce opacity to indicate it's disabled */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Today is 16 January 2024</h1>
+    </header>
+    <section>
+        <button id="impressButton" onclick="impressBFF()">Click to Megic</button>
+        <p id="impressedText"></p>
+        <button id="playSongButton" onclick="playSong()">Dedicated Song For You!</button>
+    </section>
+    <script>
+        function impressBFF() {
+            const text = "Hi Anjali! Today you must know what this is. Just to remind you, I don't know what is yours and neither will I ask you. I made this just because today is a very good day for me, I don't know whether it is good for you or not. I had been thinking of doing this for many days, but sometimes I used to stop when I had some negative thoughts, today I gathered courage and did it. I didn't make this to make you sad. Because I made it for you to tell you the good things about you, how important you were and still are. I remember the smallest things about you but this page is less, it was just to remind you, rest of the story I will tell you on your birthday ❤️😊";
+            const textElement = document.getElementById("impressedText");
+            const playSongButton = document.getElementById("playSongButton");
+
+            textElement.innerHTML = "";
+
+            function typeWriter(i) {
+                if (i < text.length) {
+                    textElement.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(function() {
+                        typeWriter(i);
+                    }, 50);
+                } else {
+                    // Enable the "Play Song" button after the text is displayed
+                    playSongButton.style.pointerEvents = "auto";
+                    playSongButton.style.opacity = 1;
+                }
+            }
+
+            textElement.style.display = "block";
+            typeWriter(0);
+        }
+
+        function playSong() {
+            // Redirect to YouTube when the button is clicked
+            window.location.href = "https://www.youtube.com/watch?v=AgX2II9si7w";
+        }
+    </script>
+</body>
+</html>
